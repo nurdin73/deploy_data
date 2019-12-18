@@ -35,7 +35,9 @@ app.group("/api/v1", router => {
   // get Popular articles
   router.get("/popularArticle", articlesController.popularArticle);
   // post article
-  router.post("/addArticle", articlesController.addArticle);
+  router.post("/article", articlesController.addArticle);
+  // update post
+  router.patch("/article/:id", articlesController.updateArticle);
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));

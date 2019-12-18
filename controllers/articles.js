@@ -43,10 +43,6 @@ exports.index = (req, res) => {
           is_active: true
         }
       }
-      // {
-      //   model: Users,
-      //   as: "User"
-      // }
     ]
   })
     .then(data => res.send(data))
@@ -111,7 +107,7 @@ exports.popularArticle = (req, res) => {
       res.send(err);
     });
 };
-
+// article detail
 exports.detail = (req, res) => {
   const { title } = req.params;
   Articles.findOne({
@@ -178,4 +174,21 @@ exports.addArticle = (req, res) => {
       data
     })
   );
+};
+
+// update article
+exports.updateArticle = (req, res) => {
+  const { id } = req.params;
+  Articles.update(req.body, {
+    where: {
+      id: id
+    }
+  })
+    .then(data =>
+      res.send({
+        message: "update success",
+        Update: data
+      })
+    )
+    .catch(err => res.send(err));
 };
