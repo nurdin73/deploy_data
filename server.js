@@ -11,7 +11,7 @@ const authController = require("./controllers/auth");
 const userController = require("./controllers/user");
 
 // middleware
-const { authenticated, authorized } = require("./middleware");
+const { authorized } = require("./middleware");
 
 app.use(express.json());
 app.get("/", (req, res) => {
@@ -40,8 +40,10 @@ app.group("/api/v1", router => {
   router.get("/articleDetails/:title", articlesController.detail);
   // get Popular articles
   router.get("/popularArticle", articlesController.popularArticle);
+  // get related article
+  router.get("/relatedArticles/:result", articlesController.related);
   // post article
-  router.post("/article", articlesController.addArticle);
+  router.post("/article", authorized, articlesController.addArticle);
   // update post
   router.patch("/article/:id", articlesController.updateArticle);
 
@@ -59,7 +61,7 @@ app.group("/api/v1", router => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.username === "UnauthorizedError") {
+  if (err) {
     res.status(401).json({ message: "You are not authorized." });
   } else {
     next(err);

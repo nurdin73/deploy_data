@@ -6,8 +6,8 @@ exports.login = (req, res) => {
   const { email, password } = req.body;
   Users.findOne({
     where: {
-      email,
-      password
+      email: email,
+      password: password
     },
     attributes: {
       exclude: [
@@ -21,7 +21,15 @@ exports.login = (req, res) => {
     }
   }).then(user => {
     if (user) {
-      const token = jwt.sign({ id: user.id }, "thisismysecretkey");
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          fullname: user.fullname
+        },
+        "thisismysecretkey"
+      );
       res.send({
         user,
         token

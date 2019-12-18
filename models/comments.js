@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       article_id: DataTypes.INTEGER,
       user_id: DataTypes.INTEGER,
-      comment: DataTypes.STRING
+      comment: DataTypes.TEXT
     },
     {}
   );
