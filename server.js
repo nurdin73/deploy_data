@@ -20,7 +20,7 @@ app.group("/api/v1", router => {
   // get detail category
   router.get("/category/:name", categoriesController.category);
   // Add Category
-  router.post("/addCategory", categoriesController.addCategory);
+  router.post("/category", categoriesController.addCategory);
   // edit category
   router.patch("/editCategory/:id", categoriesController.updateCategory);
   // delete category

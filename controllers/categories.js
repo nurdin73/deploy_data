@@ -2,7 +2,11 @@ const Categories = require("../models").categories;
 
 // get all category
 exports.index = (req, res) => {
-  Categories.findAll().then(data => res.send(data));
+  Categories.findAll({
+    attributes: {
+      exclude: ["createdAt", "updatedAt"]
+    }
+  }).then(data => res.send(data));
 };
 
 // get detail category
@@ -11,6 +15,9 @@ exports.category = (req, res) => {
   Categories.findOne({
     where: {
       name: name
+    },
+    attributes: {
+      exclude: ["createdAt", "updatedAt"]
     }
   }).then(data => res.send(data));
 };
