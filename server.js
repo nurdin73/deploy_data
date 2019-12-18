@@ -8,6 +8,7 @@ const port = 5000;
 const categoriesController = require("./controllers/categories");
 const articlesController = require("./controllers/articles");
 const authController = require("./controllers/auth");
+const userController = require("./controllers/user");
 
 // middleware
 const { authenticated, authorized } = require("./middleware");
@@ -50,6 +51,11 @@ app.group("/api/v1", router => {
   router.post("/login", authController.login);
   // register user
   router.post("/register", authController.register);
+
+  // API USER
+
+  // get all article by person
+  router.get("/user/:username/articles", userController.articles);
 });
 
 app.use((err, req, res, next) => {
