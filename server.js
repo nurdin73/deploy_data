@@ -7,6 +7,11 @@ const app = express();
 const port = 5000;
 const categoriesController = require("./controllers/categories");
 const articlesController = require("./controllers/articles");
+const authController = require("./controllers/auth");
+
+// middleware
+const { authenticated, authorized } = require("./middleware");
+
 app.use(express.json());
 app.get("/", (req, res) => {
   res.send("hayyy");
@@ -38,6 +43,18 @@ app.group("/api/v1", router => {
   router.post("/article", articlesController.addArticle);
   // update post
   router.patch("/article/:id", articlesController.updateArticle);
+
+  // API LOGIN
+
+  router.post("/login", authController.login);
+});
+
+app.use((err, req, res, next) => {
+  if (err.username === "UnauthorizedError") {
+    res.status(401).json({ message: "You are not authorized." });
+  } else {
+    next(err);
+  }
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
