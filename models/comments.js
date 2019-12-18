@@ -14,12 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     comments.belongsTo(models.articles, {
       foreignKey: "article_id",
       as: "article",
-      sourceKey: "title"
+      sourceKey: "id"
     });
     comments.belongsTo(models.users, {
       foreignKey: "user_id",
-      as: "user",
-      sourceKey: "fullname"
+      as: "user"
     });
   };
   return comments;

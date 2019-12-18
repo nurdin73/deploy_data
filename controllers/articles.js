@@ -1,6 +1,7 @@
 const Articles = require("../models").articles;
 const Categories = require("../models").categories;
 const Users = require("../models").users;
+const Comments = require("../models").comments;
 
 exports.index = (req, res) => {
   Articles.findAll({
@@ -152,18 +153,33 @@ exports.detail = (req, res) => {
         where: {
           is_active: true
         }
+      },
+      {
+        model: Comments,
+        as: "comment",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "user_id", "article_id"]
+        },
+        include: [
+          {
+            model: Users,
+            as: "user",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "is_active", "password"]
+            }
+          }
+        ]
       }
       // {
       //   model: Users,
       //   as: "User"
       // }
     ]
-  })
-    .then(data => res.send(data))
-    .catch(err => {
-      res.status(500);
-      res.send(err);
-    });
+  }).then(data => res.send(data));
+  // .catch(err => {
+  //   res.status(500);
+  //   res.send(err);
+  // });
 };
 
 // Post articles
