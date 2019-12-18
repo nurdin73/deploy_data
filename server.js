@@ -46,7 +46,10 @@ app.group("/api/v1", router => {
 
   // API LOGIN
 
+  // login user
   router.post("/login", authController.login);
+  // register user
+  router.post("/register", authController.register);
 });
 
 app.use((err, req, res, next) => {

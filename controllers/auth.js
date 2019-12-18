@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Users = require("../models").users;
+
+// login
 exports.login = (req, res) => {
   const { email, password } = req.body;
   Users.findOne({
@@ -30,4 +32,16 @@ exports.login = (req, res) => {
       });
     }
   });
+};
+
+// register
+exports.register = (req, res) => {
+  const token = jwt.sign({ email: req.body.email }, "thisismysecretkey");
+  Users.create(req.body).then(data =>
+    res.send({
+      message: "register success",
+      User: data,
+      token: token
+    })
+  );
 };
