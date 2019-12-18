@@ -1,4 +1,6 @@
 const Categories = require("../models").categories;
+const Articles = require("../models").articles;
+const Users = require("../models").users;
 
 // get all category
 exports.index = (req, res) => {
@@ -12,13 +14,38 @@ exports.index = (req, res) => {
 // get detail category
 exports.category = (req, res) => {
   const { name } = req.params;
-  Categories.findOne({
+  Categories.findAll({
     where: {
       name: name
     },
     attributes: {
       exclude: ["createdAt", "updatedAt"]
-    }
+    },
+    include: [
+      {
+        model: Articles,
+        as: "category",
+        attributes: {
+          exclude: [
+            "createdAt",
+            "updatedAt",
+            "category_id",
+            "author_id",
+            "is_published",
+            "is_archived"
+          ]
+        },
+        include: [
+          {
+            model: Users,
+            as: "user",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "is_active", "password"]
+            }
+          }
+        ]
+      }
+    ]
   }).then(data => res.send(data));
 };
 

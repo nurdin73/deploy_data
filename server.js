@@ -18,7 +18,7 @@ app.group("/api/v1", router => {
   // get all data categories
   router.get("/categories", categoriesController.index);
   // get detail category
-  router.get("/category/:name", categoriesController.category);
+  router.get("/category/:name/articles", categoriesController.category);
   // Add Category
   router.post("/category", categoriesController.addCategory);
   // edit category
