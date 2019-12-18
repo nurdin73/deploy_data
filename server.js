@@ -32,6 +32,8 @@ app.group("/api/v1", router => {
   router.get("/articles", articlesController.index);
   // get detail article
   router.get("/articleDetails/:title", articlesController.detail);
+  // get Popular articles
+  router.get("/popularArticle", articlesController.popularArticle);
   // post article
   router.post("/addArticle", articlesController.addArticle);
 });

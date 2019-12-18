@@ -16,11 +16,11 @@ module.exports = (sequelize, DataTypes) => {
   articles.associate = function(models) {
     articles.belongsTo(models.categories, {
       foreignKey: "category_id",
-      sourceKey: "id"
+      sourceKey: "name"
     });
     articles.belongsTo(models.users, {
       foreignKey: "author_id",
-      sourceKey: "id"
+      sourceKey: "fullname"
     });
   };
   return articles;

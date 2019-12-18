@@ -3,35 +3,171 @@ const Categories = require("../models").categories;
 const Users = require("../models").users;
 
 exports.index = (req, res) => {
-  Categories.findAll({
+  Articles.findAll({
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt",
+        "category_id",
+        "author_id",
+        "is_published",
+        "is_archived"
+      ]
+    },
     include: [
       {
+        model: Categories,
+        as: "category",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "is_published", "is_archived"]
+        },
+        where: {
+          is_published: true,
+          is_archived: false
+        }
+      },
+      {
         model: Users,
-        as: "users",
-        through: {
-          model: Articles
+        as: "user",
+        attributes: {
+          exclude: [
+            "createdAt",
+            "updatedAt",
+            "is_published",
+            "is_archived",
+            "is_active",
+            "password"
+          ]
+        },
+        where: {
+          is_active: true
         }
       }
+      // {
+      //   model: Users,
+      //   as: "User"
+      // }
     ]
-  }).then(data => res.send(data));
+  })
+    .then(data => res.send(data))
+    .catch(err => {
+      res.status(500);
+      res.send(err);
+    });
+};
+
+exports.popularArticle = (req, res) => {
+  Articles.findAll({
+    order: [["id", "DESC"]],
+    limit: 10,
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt",
+        "category_id",
+        "author_id",
+        "is_published",
+        "is_archived"
+      ]
+    },
+    include: [
+      {
+        model: Categories,
+        as: "category",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "is_published", "is_archived"]
+        },
+        where: {
+          is_published: true,
+          is_archived: false
+        }
+      },
+      {
+        model: Users,
+        as: "user",
+        attributes: {
+          exclude: [
+            "createdAt",
+            "updatedAt",
+            "is_published",
+            "is_archived",
+            "is_active",
+            "password"
+          ]
+        },
+        where: {
+          is_active: true
+        }
+      }
+      // {
+      //   model: Users,
+      //   as: "User"
+      // }
+    ]
+  })
+    .then(data => res.send(data))
+    .catch(err => {
+      res.status(500);
+      res.send(err);
+    });
 };
 
 exports.detail = (req, res) => {
   const { title } = req.params;
-  Categories.findOne({
+  Articles.findOne({
+    attributes: {
+      exclude: [
+        "createdAt",
+        "updatedAt",
+        "category_id",
+        "author_id",
+        "is_published",
+        "is_archived"
+      ]
+    },
+    where: {
+      title: title
+    },
     include: [
       {
+        model: Categories,
+        as: "category",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "is_published", "is_archived"]
+        },
+        where: {
+          is_published: true,
+          is_archived: false
+        }
+      },
+      {
         model: Users,
-        as: "users",
-        through: {
-          model: Articles,
-          where: {
-            title: title
-          }
+        as: "user",
+        attributes: {
+          exclude: [
+            "createdAt",
+            "updatedAt",
+            "is_published",
+            "is_archived",
+            "is_active",
+            "password"
+          ]
+        },
+        where: {
+          is_active: true
         }
       }
+      // {
+      //   model: Users,
+      //   as: "User"
+      // }
     ]
-  }).then(data => res.send(data));
+  })
+    .then(data => res.send(data))
+    .catch(err => {
+      res.status(500);
+      res.send(err);
+    });
 };
 
 // Post articles
