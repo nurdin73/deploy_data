@@ -11,7 +11,8 @@ const articles = data => {
       content: item.content,
       image: item.image,
       category: item.category.name,
-      user: item.user.fullname
+      user: item.user.fullname,
+      dateCreated: item.createdAt
     };
     return newItem;
   });
@@ -23,7 +24,6 @@ exports.articles = (req, res) => {
   Articles.findAll({
     attributes: {
       exclude: [
-        "createdAt",
         "updatedAt",
         "category_id",
         "author_id",
@@ -54,10 +54,7 @@ exports.articles = (req, res) => {
         }
       }
     ]
-  }).then(data =>
-    res.send({
-      status: "200 OK",
-      data: articles(data)
-    })
-  );
+  }).then(data => {
+    res.status(200), res.send(articles(data));
+  });
 };

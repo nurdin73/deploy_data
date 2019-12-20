@@ -1,17 +1,18 @@
 require("express-group-routes");
-
+const jwt = require("express-jwt");
 const express = require("express");
-
+const cors = require("cors");
 const app = express();
-
+app.use(cors());
 const port = 5000;
 const categoriesController = require("./controllers/categories");
 const articlesController = require("./controllers/articles");
 const authController = require("./controllers/auth");
 const userController = require("./controllers/user");
+const followController = require("./controllers/follows");
 
 // middleware
-const { authorized } = require("./middleware");
+const { authorized, authenticated } = require("./middleware");
 
 app.use(express.json());
 app.get("/", (req, res) => {
@@ -23,6 +24,8 @@ app.group("/api/v1", router => {
 
   // get all data categories
   router.get("/categories", categoriesController.index);
+  // get category id
+  router.get("/category/:id", categoriesController.getDetail);
   // get detail category
   router.get("/category/:name/articles", categoriesController.category);
   // Add Category
@@ -33,19 +36,40 @@ app.group("/api/v1", router => {
   router.delete("/deleteCategory/:id", categoriesController.deleteCategory);
 
   // API ARTICLES
+  // const authorized = (req, res, next) => {
+  //   const authHeader = req.headers["authorization"];
+  //   const token = authHeader && authHeader.split(" ")[1];
+  //   if (token == null) return res.sendStatus(401);
+
+  //   jwt.verify(token, "thisismysecretkey", (err, user) => {
+  //     if (err) return res.sendStatus(403);
+  //     req.user = user;
+  //     next();
+  //   });
+  // };
 
   // get all articles
   router.get("/articles", articlesController.index);
   // get detail article
   router.get("/articleDetails/:title", articlesController.detail);
   // get Popular articles
-  router.get("/popularArticle", articlesController.popularArticle);
+  router.get("/article/latest", articlesController.popularArticle);
   // get related article
   router.get("/relatedArticles/:result", articlesController.related);
   // post article
-  router.post("/article", authorized, articlesController.addArticle);
+  router.post("/article", authenticated, articlesController.addArticle);
   // update post
-  router.patch("/article/:id", articlesController.updateArticle);
+  router.patch(
+    "/user/:author_id/editArticle/:id",
+    authorized,
+    articlesController.updateArticle
+  );
+  // delete article
+  router.delete(
+    "/user/:author_id/deleteArticle/:article_id",
+    authorized,
+    articlesController.deleteArticle
+  );
 
   // API LOGIN
 
@@ -58,14 +82,16 @@ app.group("/api/v1", router => {
 
   // get all article by person
   router.get("/user/:username/articles", userController.articles);
-});
 
-app.use((err, req, res, next) => {
-  if (err) {
-    res.status(401).json({ message: "You are not authorized." });
-  } else {
-    next(err);
-  }
+  // API FOLLOW
+
+  // add follow
+  router.post("/follow", authenticated, followController.add);
 });
+// app.use((err, req, res, next) => {
+//   if (err.name === "UnauthorizedError") {
+//     res.status(401).send("invalid token...");
+//   }
+// });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));

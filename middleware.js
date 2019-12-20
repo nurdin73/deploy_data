@@ -1,25 +1,62 @@
-const jwt = require("express-jwt");
-
-exports.authenticated = jwt({ secret: "thisismysecretkey" });
+const jwt = require("jsonwebtoken");
 
 exports.authorized = (req, res, next) => {
-  var token = req.body.token || req.query.token || req.headers.authorization;
-  if (token) {
-    jwt.verify(token, "thisismysecretkey", (err, decode) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: "Token is not valid"
-        });
-      } else {
-        req.decode = decode;
-        next();
-      }
+  let tokenHeader = req.headers["authorization"];
+
+  if (!tokenHeader) {
+    return res.status(403).json({
+      msg: "Token is not defined"
     });
-  } else {
-    return res.json({
-      success: false,
-      message: "Auth token is not supplied"
+  }
+
+  let token = tokenHeader.slice(7, tokenHeader.length);
+
+  if (token) {
+    jwt.verify(token, "thisismysecretkey", (err, decoded) => {
+      if (err) {
+        return res.status(403).json({
+          msg: "Token is not valid"
+        });
+      }
+
+      if (req.params.author_id != decoded.id) {
+        return res.status(401).json({
+          msg: "You are not authorized"
+        });
+      }
+
+      next();
+    });
+  }
+};
+
+exports.authenticated = (req, res, next) => {
+  let token = req.headers["authorization"];
+  try {
+    let tokenHeader = req.headers["authorization"];
+    let token = tokenHeader.slice(7, tokenHeader.length);
+
+    if (token) {
+      jwt.verify(token, "thisismysecretkey", (err, decode) => {
+        if (err) {
+          return res.status(403).json({
+            success: false,
+            message: "token is not valid"
+          });
+        } else {
+          req.decode = decode;
+          next();
+        }
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "You are not login"
+      });
+    }
+  } catch (error) {
+    res.send({
+      message: "token is not defined"
     });
   }
 };

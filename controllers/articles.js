@@ -11,8 +11,16 @@ const articles = data => {
       title: item.title,
       content: item.content,
       image: item.image,
-      category: item.category.name,
-      user: item.user.fullname
+      category: {
+        id: item.category.id,
+        name: item.category.name
+      },
+      user: {
+        id: item.user.id,
+        username: item.user.username
+      },
+      dateCreated: item.createdAt,
+      slug: item.title.replace(" ", "-")
     };
     return newItem;
   });
@@ -23,7 +31,6 @@ exports.index = (req, res) => {
   Articles.findAll({
     attributes: {
       exclude: [
-        "createdAt",
         "updatedAt",
         "category_id",
         "author_id",
@@ -64,7 +71,6 @@ exports.index = (req, res) => {
   })
     .then(data => res.send(articles(data)))
     .catch(err => {
-      res.status(500);
       res.send(err);
     });
 };
@@ -128,22 +134,26 @@ exports.popularArticle = (req, res) => {
 };
 
 // article detail
-// const detailArticles = data => {
-//   const newArticle = data.map(item => {
-//     let newItem = {
-//       id: item.id,
-//       title: item.title,
-//       content: item.content,
-//       image: item.image,
-//       category: item.category.name,
-//       user: item.user.fullname,
-//       comment: item.comment.comment,
-//       user_comment: item.comment.user.
-//     };
-//     return newItem;
-//   });
-//   return newArticle;
-// };
+const detailArticles = data => {
+  const newArticle = data.map(item => {
+    let newItem = {
+      id: item.id,
+      title: item.title,
+      content: item.content,
+      image: item.image,
+      category: {
+        id: item.category.id,
+        name: item.category.name
+      },
+      user: {
+        id: item.user.id,
+        email: item.user.email
+      }
+    };
+    return newItem;
+  });
+  return newArticle;
+};
 exports.detail = (req, res) => {
   const { title } = req.params;
   Articles.findOne({
@@ -195,15 +205,13 @@ exports.detail = (req, res) => {
         attributes: {
           exclude: ["createdAt", "updatedAt", "user_id", "article_id"]
         },
-        include: [
-          {
-            model: Users,
-            as: "user",
-            attributes: {
-              exclude: ["createdAt", "updatedAt", "is_active", "password"]
-            }
+        include: {
+          model: Users,
+          as: "user",
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "is_active", "password"]
           }
-        ]
+        }
       }
       // {
       //   model: Users,
@@ -278,12 +286,27 @@ exports.updateArticle = (req, res) => {
     where: {
       id: id
     }
-  })
-    .then(data =>
-      res.send({
-        message: "update success",
-        Update: data
-      })
-    )
-    .catch(err => res.send(err));
+  }).then(data =>
+    res.send({
+      message: "update success",
+      Update: data
+    })
+  );
+  // .catch(err => res.send(err));
+};
+
+// delete article
+exports.deleteArticle = (req, res) => {
+  const { article_id, author_id } = req.params;
+  Articles.destroy({
+    where: {
+      id: article_id,
+      author_id: author_id
+    }
+  }).then(data => {
+    res.send({
+      message: "delete success",
+      data
+    });
+  });
 };
