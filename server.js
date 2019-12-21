@@ -51,22 +51,22 @@ app.group("/api/v1", router => {
   // get all articles
   router.get("/articles", articlesController.index);
   // get detail article
-  router.get("/articleDetails/:title", articlesController.detail);
+  router.get("/article/:title", articlesController.detail);
   // get Popular articles
   router.get("/article/latest", articlesController.popularArticle);
   // get related article
-  router.get("/relatedArticles/:result", articlesController.related);
+  router.get("/related/:result", articlesController.related);
   // post article
   router.post("/article", authenticated, articlesController.addArticle);
   // update post
   router.patch(
-    "/user/:author_id/editArticle/:id",
+    "/user/:author_id/edit/:id",
     authorized,
     articlesController.updateArticle
   );
   // delete article
   router.delete(
-    "/user/:author_id/deleteArticle/:article_id",
+    "/user/:author_id/delete/:article_id",
     authorized,
     articlesController.deleteArticle
   );
