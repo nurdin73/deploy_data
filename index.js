@@ -87,6 +87,8 @@ app.group("/api/v1", router => {
 
   // add follow
   router.post("/follow", authenticated, followController.add);
+
+  router.get("/comments/:id", commentController.index);
 });
 // app.use((err, req, res, next) => {
 //   if (err.name === "UnauthorizedError") {
