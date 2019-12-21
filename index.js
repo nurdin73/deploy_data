@@ -10,6 +10,7 @@ const articlesController = require("./controllers/articles");
 const authController = require("./controllers/auth");
 const userController = require("./controllers/user");
 const followController = require("./controllers/follows");
+const commentController = require("./controllers/comments");
 
 // middleware
 const { authorized, authenticated } = require("./middleware");
