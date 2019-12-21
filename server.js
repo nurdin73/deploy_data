@@ -10,6 +10,7 @@ const articlesController = require("./controllers/articles");
 const authController = require("./controllers/auth");
 const userController = require("./controllers/user");
 const followController = require("./controllers/follows");
+const commentController = require("./controllers/comments");
 
 // middleware
 const { authorized, authenticated } = require("./middleware");
@@ -87,6 +88,11 @@ app.group("/api/v1", router => {
 
   // add follow
   router.post("/follow", authenticated, followController.add);
+
+  // API COMMENT
+
+  // get all comment
+  router.get("/comments/:id", commentController.index);
 });
 // app.use((err, req, res, next) => {
 //   if (err.name === "UnauthorizedError") {

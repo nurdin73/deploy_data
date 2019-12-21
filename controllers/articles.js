@@ -1,7 +1,7 @@
 const Articles = require("../models").articles;
 const Categories = require("../models").categories;
 const Users = require("../models").users;
-const Comments = require("../models").comments;
+
 
 // get all article
 const articles = data => {
@@ -199,20 +199,7 @@ exports.detail = (req, res) => {
           is_active: true
         }
       },
-      {
-        model: Comments,
-        as: "comment",
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "user_id", "article_id"]
-        },
-        include: {
-          model: Users,
-          as: "user",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "is_active", "password"]
-          }
-        }
-      }
+
       // {
       //   model: Users,
       //   as: "User"
