@@ -3,10 +3,10 @@ const Users = require("../models").users;
 
 // login
 exports.login = (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   Users.findOne({
     where: {
-      email: email,
+      username: username,
       password: password
     },
     attributes: {
@@ -24,13 +24,12 @@ exports.login = (req, res) => {
       if (user) {
         const token = jwt.sign(
           {
-            id: user.id,
-            email: user.username
+            id: user.id
           },
           "thisismysecretkey"
         );
         res.status(200).json({
-          email: user.email,
+          username: user.username,
           token: token
         });
       } else {
@@ -49,7 +48,7 @@ exports.register = (req, res) => {
   const token = jwt.sign({ email: req.body.email }, "thisismysecretkey");
   Users.create(req.body).then(data =>
     res.status(200).json({
-      email: data.email,
+      username: data.username,
       token: token
     })
   );
